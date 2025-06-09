@@ -30,12 +30,20 @@ export class LoginComponent {
       .subscribe({
         next: (res) => {
           this.isLoading = false;
-          this.auth.setCurrentUser(res);
           this.router.navigate(['/absences']);
         },
         error: (error) => {
           this.isLoading = false;
-          this.error = 'Email ou mot de passe incorrect';
+          console.error('Erreur lors de la connexion:', error);
+
+          // Gestion d'erreur plus précise
+          if (error.status === 401) {
+            this.error = 'Email ou mot de passe incorrect';
+          } else if (error.status === 0) {
+            this.error = 'Impossible de se connecter au serveur';
+          } else {
+            this.error = 'Une erreur est survenue lors de la connexion';
+          }
         },
       });
   }

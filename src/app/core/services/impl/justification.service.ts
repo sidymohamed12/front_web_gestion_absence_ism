@@ -11,8 +11,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class JustificationService implements IJustificationService {
-  private readonly apiUrl =
-    'https://ism-absences-api.onrender.com/api/web/admin/justification';
+  private readonly apiUrl = 'http://localhost:8080/api/web/admin/justification';
   constructor(private readonly http: HttpClient) {}
 
   traiterJustification(

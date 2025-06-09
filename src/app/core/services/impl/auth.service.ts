@@ -3,9 +3,11 @@ import {
   LoginRequestDTO,
   LoginResponse,
   Role,
+  UtilisateurMobileDto,
 } from '../../models/utilisateur.model';
 import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -13,14 +15,14 @@ import { HttpClient } from '@angular/common/http';
 export class AuthService {
   private currentUser?: LoginResponse;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router
+  ) {}
 
   login(data: LoginRequestDTO): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>(
-        'https://ism-absences-api.onrender.com/api/web/auth/login',
-        data
-      )
+      .post<LoginResponse>('http://localhost:8080/api/auth/login', data)
       .pipe(
         tap((response) => {
           this.storeAuthData(response);
@@ -29,61 +31,101 @@ export class AuthService {
       );
   }
 
-  private storeAuthData(authData: LoginResponse) {
-    localStorage.setItem('token', authData.token);
-    localStorage.setItem('user', JSON.stringify(authData.utilisateur));
-  }
-
-  private clearAuthData() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  }
-
-  logout(): Observable<any> {
+  logout(): void {
     this.clearAuthData();
     this.currentUser = undefined;
-    return this.http.post(
-      'https://ism-absences-api.onrender.com/api/web/auth/logout',
-      {}
-    );
+    this.router.navigate(['/login']);
   }
 
-  autoLogin() {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
-
-    if (token && user) {
-      this.currentUser = {
-        token: token,
-        type: 'Bearer',
-        utilisateur: JSON.parse(user),
-        userId: JSON.parse(user).id,
-        role: JSON.parse(user).role as Role,
-        redirectEndpoint: '',
-        realId: '',
-      };
-      return true;
-    }
-    return false;
-  }
-
+  // Méthode manquante : récupérer le token
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  setCurrentUser(user: LoginResponse) {
-    this.currentUser = user;
+  // Méthode manquante : vérifier si l'utilisateur est connecté
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return false;
+    }
+
+    // Vérifier si le token n'est pas expiré
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+      return payload.exp > currentTime;
+    } catch (error) {
+      console.error('Error parsing token:', error);
+      return false;
+    }
   }
 
+  // Méthode manquante : tentative de connexion automatique
+  autoLogin(): boolean {
+    const token = this.getToken();
+    const userData = localStorage.getItem('user');
+
+    if (token && userData && this.isLoggedIn()) {
+      try {
+        const user: UtilisateurMobileDto = JSON.parse(userData);
+        this.currentUser = {
+          token,
+          utilisateur: user,
+          userId: user.id,
+          role: user.role,
+          redirectEndpoint: '',
+          type: 'Bearer',
+          realId: user.id,
+        };
+        return true;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        this.clearAuthData();
+        return false;
+      }
+    }
+
+    this.clearAuthData();
+    return false;
+  }
+
+  // Récupérer l'utilisateur actuel
   getCurrentUser(): LoginResponse | undefined {
     return this.currentUser;
   }
 
-  isLoggedIn(): boolean {
-    return !!this.currentUser;
+  // Récupérer les données utilisateur depuis localStorage
+  getUserData(): UtilisateurMobileDto | null {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        return JSON.parse(userData);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        return null;
+      }
+    }
+    return null;
   }
 
-  getRole(): string | undefined {
-    return this.currentUser?.role;
+  // Vérifier si l'utilisateur a un rôle spécifique
+  hasRole(role: Role): boolean {
+    const user = this.getUserData();
+    return user?.role === role;
+  }
+
+  // Vérifier si l'utilisateur est admin
+  isAdmin(): boolean {
+    return this.hasRole(Role.ADMIN);
+  }
+
+  private storeAuthData(authData: LoginResponse): void {
+    localStorage.setItem('token', authData.token);
+    localStorage.setItem('user', JSON.stringify(authData.utilisateur));
+  }
+
+  private clearAuthData(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 }

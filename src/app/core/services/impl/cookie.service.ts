@@ -4,89 +4,57 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class CookieService {
-  /**
-   * Définir un cookie
-   * @param name - Nom du cookie
-   * @param value - Valeur du cookie
-   * @param days - Nombre de jours d'expiration (optionnel)
-   * @param path - Chemin du cookie (par défaut '/')
-   * @param secure - Cookie sécurisé (HTTPS uniquement)
-   * @param sameSite - Politique SameSite
-   */
   setCookie(
     name: string,
     value: string,
-    days?: number,
-    path: string = '/',
-    secure: boolean = false,
-    sameSite: 'Strict' | 'Lax' | 'None' = 'Lax'
+    days: number = 7,
+    secure: boolean = true
   ): void {
-    let expires = '';
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
 
-    if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = `; expires=${date.toUTCString()}`;
+    let cookieString = `${name}=${encodeURIComponent(
+      value
+    )}; expires=${expires.toUTCString()}; path=/`;
+
+    if (secure) {
+      cookieString += '; secure';
     }
 
-    const secureFlag = secure ? '; Secure' : '';
-    const sameSiteFlag = `; SameSite=${sameSite}`;
+    // SameSite pour la sécurité CSRF
+    cookieString += '; SameSite=Strict';
 
-    document.cookie = `${name}=${encodeURIComponent(
-      value
-    )}${expires}; path=${path}${secureFlag}${sameSiteFlag}`;
+    document.cookie = cookieString;
   }
 
-  /**
-   * Récupérer un cookie
-   * @param name - Nom du cookie
-   * @returns La valeur du cookie ou null si non trouvé
-   */
   getCookie(name: string): string | null {
-    const nameEQ = `${name}=`;
-    const cookies = document.cookie.split(';');
+    const nameEQ = name + '=';
+    const ca = document.cookie.split(';');
 
-    for (let cookie of cookies) {
-      if (cookie.trim().startsWith(nameEQ)) {
-        return decodeURIComponent(cookie.trim().substring(nameEQ.length));
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1, c.length);
+      }
+      if (c.indexOf(nameEQ) === 0) {
+        return decodeURIComponent(c.substring(nameEQ.length, c.length));
       }
     }
     return null;
   }
 
-  /**
-   * Supprimer un cookie
-   * @param name - Nom du cookie
-   * @param path - Chemin du cookie (par défaut '/')
-   */
-  deleteCookie(name: string, path: string = '/'): void {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
+  deleteCookie(name: string): void {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; SameSite=Strict`;
   }
 
-  /**
-   * Vérifier si un cookie existe
-   * @param name - Nom du cookie
-   * @returns true si le cookie existe
-   */
-  hasCookie(name: string): boolean {
-    return this.getCookie(name) !== null;
-  }
+  deleteAllCookies(): void {
+    const cookies = document.cookie.split(';');
 
-  /**
-   * Récupérer tous les cookies
-   * @returns Un objet avec tous les cookies
-   */
-  getAllCookies(): { [key: string]: string } {
-    const cookies: { [key: string]: string } = {};
-    const cookieArray = document.cookie.split(';');
-
-    for (let cookie of cookieArray) {
-      const trimmedCookie = cookie.trim();
-      const [name, value] = trimmedCookie.split('=');
-      if (name && value) {
-        cookies[name] = decodeURIComponent(value);
-      }
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf('=');
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+      this.deleteCookie(name);
     }
-    return cookies;
   }
 }
