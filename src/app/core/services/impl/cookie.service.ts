@@ -7,22 +7,20 @@ export class CookieService {
   setCookie(
     name: string,
     value: string,
-    days: number = 7,
+    days: number = 1,
     secure: boolean = true
   ): void {
     const expires = new Date();
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
 
-    let cookieString = `${name}=${encodeURIComponent(
-      value
-    )}; expires=${expires.toUTCString()}; path=/`;
+    let cookieString = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
 
     if (secure) {
-      cookieString += '; secure';
+      cookieString += '; Secure';
     }
 
     // SameSite pour la sécurité CSRF
-    cookieString += '; SameSite=Strict';
+    cookieString += '; SameSite=Lax';
 
     document.cookie = cookieString;
   }
@@ -37,24 +35,17 @@ export class CookieService {
         c = c.substring(1, c.length);
       }
       if (c.indexOf(nameEQ) === 0) {
-        return decodeURIComponent(c.substring(nameEQ.length, c.length));
+        return c.substring(nameEQ.length, c.length);
       }
     }
     return null;
   }
 
   deleteCookie(name: string): void {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; SameSite=Strict`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; Secure; SameSite=Strict`;
   }
 
-  deleteAllCookies(): void {
-    const cookies = document.cookie.split(';');
-
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i];
-      const eqPos = cookie.indexOf('=');
-      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-      this.deleteCookie(name);
-    }
+  cookieExists(name: string): boolean {
+    return this.getCookie(name) !== null;
   }
 }

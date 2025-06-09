@@ -16,7 +16,9 @@ export class SidebarComponent {
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
-      this.currentUser = this.authService.getCurrentUser();
+      this.authService.currentUser$.subscribe((user) => {
+        this.currentUser = user ?? undefined;
+      });
     }
   }
 }
