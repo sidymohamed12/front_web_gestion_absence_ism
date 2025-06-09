@@ -1,0 +1,104 @@
+<nav
+  class="w-[230px] h-screen fixed bg-[#3C1F0D] pt-8 text-white flex flex-col items-center"
+>
+  <img src="logo-ISM.jpeg" alt="Logo ISM" class="w-[160px] mb-10" />
+
+  <!-- Lien principal avec icône -->
+
+  <a
+    routerLink="/absences"
+    class="text-white no-underline font-normal w-full px-5 py-3 flex items-center gap-2.5 text-xl hover:bg-[#995c29]"
+  >
+    <i class="bi bi-shield-lock text-[1.2rem]"></i> Absences
+  </a>
+  <a
+    routerLink="/classes"
+    class="text-white no-underline font-normal w-full px-5 py-3 flex items-center gap-2.5 text-xl hover:bg-[#995c29]"
+  >
+    <i class="bi bi-shield-lock text-[1.2rem]"></i> Classes
+  </a>
+  <a
+    routerLink="/vigiles"
+    class="text-white no-underline font-normal w-full px-5 py-3 flex items-center gap-2.5 text-xl hover:bg-[#995c29]"
+  >
+    <i class="bi bi-shield-lock text-[1.2rem]"></i> Vigiles
+  </a>
+  <a
+    routerLink="/etudiants"
+    class="text-white no-underline font-normal w-full px-5 py-3 flex items-center gap-2.5 text-xl hover:bg-[#995c29]"
+  >
+    <i class="bi bi-shield-lock text-[1.2rem]"></i> Etudiants
+  </a>
+
+  <!-- Liens bas de sidebar -->
+  <div class="mt-auto w-full mb-5">
+    <a
+      href=""
+      class="text-white no-underline w-full font-normal px-5 py-2 flex items-center gap-2.5 text-lg hover:bg-[#995c29]"
+    >
+      <i class="bi bi-gear text-[1.2rem]">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-settings-icon lucide-settings"
+        >
+          <path
+            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+          />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      </i>
+      Paramètre
+    </a>
+    <a
+      routerLink="/logout"
+      class="text-white no-underline w-full font-normal px-5 py-2 flex items-center gap-2.5 text-lg hover:bg-[#995c29]"
+    >
+      <i class="bi bi-box-arrow-right text-[1.2rem]"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-log-out-icon lucide-log-out"
+        >
+          <path d="m16 17 5-5-5-5" />
+          <path d="M21 12H9" />
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        </svg>
+      </i>
+      Déconnexion
+    </a>
+    <div class="flex items-center mt-3 px-5 py-3">
+      <div
+        class="h-10 w-10 bg-[#E07B1E] rounded-full flex items-center justify-center"
+      >
+        <span class="text-sm font-medium text-white">
+          {{ currentUser?.utilisateur?.prenom?.[0]}}
+          {{ currentUser?.utilisateur?.nom?.[0] }}
+        </span>
+      </div>
+      <div class="ml-4">
+        <div class="text-sm font-medium text-[#E07B1E]">
+          {{ currentUser?.utilisateur?.prenom }}
+          {{ currentUser?.utilisateur?.nom }}
+        </div>
+        <div class="text-sm text-white">
+          {{ currentUser?.utilisateur?.departement }}
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,13 @@
+.gradient-bg {
+            background: linear-gradient(135deg, #ea580c 0%, #92400e 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .login-image {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="%23f3f4f6" width="400" height="300"/><rect fill="%23ea580c" x="50" y="50" width="300" height="200" rx="10"/><circle fill="%23ffffff" cx="200" cy="120" r="30"/><rect fill="%23ffffff" x="160" y="160" width="80" height="8" rx="4"/><rect fill="%23fed7aa" x="170" y="180" width="60" height="6" rx="3"/><rect fill="%23fb923c" x="320" y="60" width="20" height="20" rx="10"/><rect fill="%2392400e" x="60" y="220" width="15" height="15" rx="2"/><text x="200" y="280" text-anchor="middle" fill="%23374151" font-family="Arial" font-size="14">Gestion des Absences</text></svg>');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }

@@ -1,0 +1,384 @@
+<app-sidebar />
+
+<!-- Main Content -->
+<main class="ml-[230px] p-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Gestion des Absences</h1>
+    <p class="text-gray-600">Tableau de bord et liste des absences</p>
+  </div>
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+    <!-- Skeleton for Stats Cards -->
+    @if (isLoading) { @for (item of [1,2,3,4]; track $index) {
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-gray-200 rounded-full animate-pulse">
+          <div class="w-6 h-6 bg-gray-300 rounded"></div>
+        </div>
+        <div class="ml-4 flex-1">
+          <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-20"></div>
+          <div class="h-8 bg-gray-200 rounded animate-pulse w-16"></div>
+        </div>
+      </div>
+    </div>
+    } } @else {
+
+    <!-- Actual Stats Cards -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-red-100 rounded-full">
+          <i class="fas fa-times text-red-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Total Absences</p>
+          <p class="text-2xl font-bold text-gray-900">23</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-yellow-100 rounded-full">
+          <i class="fas fa-clock text-yellow-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Retards</p>
+          <p class="text-2xl font-bold text-gray-900">156</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-100 rounded-full">
+          <i class="fas fa-file-alt text-blue-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Justifications</p>
+          <p class="text-2xl font-bold text-gray-900">89</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-100 rounded-full">
+          <i class="fas fa-check text-green-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Validées</p>
+          <p class="text-2xl font-bold text-gray-900">45</p>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Filters Section -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Filtres</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div>
+        <label
+          for="type-absence-select"
+          class="block text-sm font-medium text-gray-700 mb-2"
+          >Type d'absence</label
+        >
+        <select
+          id="type-absence-select"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          [disabled]="isLoading"
+        >
+          <option value="">Tous les types</option>
+          <option value="RETARD">Retard</option>
+          <option value="ABSENCE_COMPLETE">Absence complète</option>
+        </select>
+      </div>
+      <div>
+        <label
+          for="date-input"
+          class="block text-sm font-medium text-gray-700 mb-2"
+          >Date</label
+        >
+        <input
+          id="date-input"
+          type="date"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <div>
+        <label
+          for="etudiant-input"
+          class="block text-sm font-medium text-gray-700 mb-2"
+          >Étudiant</label
+        >
+        <input
+          id="etudiant-input"
+          type="text"
+          placeholder="Nom ou matricule"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          [disabled]="isLoading"
+        />
+      </div>
+      <div class="flex items-end">
+        <button
+          class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          [disabled]="isLoading"
+        >
+          <i class="fas fa-search mr-2"></i>
+          Rechercher
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Absences Table -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">Liste des Absences</h3>
+        @if (isLoading) {
+        <div class="flex items-center text-sm text-gray-500">
+          <div
+            class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"
+          ></div>
+          Chargement...
+        </div>
+        }
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Étudiant
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Cours
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Type
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Date
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Retard
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Justification
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <!-- Skeleton Rows -->
+          @if (isLoading) { @for (item of getSkeletonItems(); track $index) {
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div
+                  class="h-10 w-10 bg-gray-200 rounded-full animate-pulse"
+                ></div>
+                <div class="ml-4">
+                  <div
+                    class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-32"
+                  ></div>
+                  <div class="h-3 bg-gray-200 rounded animate-pulse w-24"></div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div
+                class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-28"
+              ></div>
+              <div class="h-3 bg-gray-200 rounded animate-pulse w-40"></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div
+                class="h-6 bg-gray-200 rounded-full animate-pulse w-20"
+              ></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="h-4 bg-gray-200 rounded animate-pulse w-12"></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div
+                class="h-6 bg-gray-200 rounded-full animate-pulse w-24"
+              ></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <div class="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
+            </td>
+          </tr>
+          } } @else {
+          <!-- Actual Data Rows -->
+          @for(absence of absences; track absence.id){
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div
+                  class="h-10 w-10 bg-gray-300 rounded-full flex items-center justify-center"
+                >
+                  <span class="text-sm font-medium text-gray-700">
+                    {{ absence.etudiantPrenom[0] }}{{ absence.etudiantNom[0] }}
+                  </span>
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ absence.etudiantPrenom }} {{ absence.etudiantNom }}
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    {{ absence.etudiantMatricule }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ absence.coursNom }}</div>
+              <div class="text-sm text-gray-500">
+                {{ absence.salleNom }} - {{ absence.createdAt | date : "EEEE" }}
+                {{ absence.createdAt | date : "shortTime" }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                [ngClass]="{
+                  'bg-orange-300': absence.type === 'RETARD',
+                  'bg-red-300 ': absence.type === 'ABSENCE_COMPLETE',
+                  'bg-green-100 text-gray-800':
+                    absence.type !== 'RETARD' &&
+                    absence.type !== 'ABSENCE_COMPLETE'
+                }"
+              >
+                {{ absence.type }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ absence.createdAt | date : "shortDate" }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ absence.minutesRetard }} mn
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800"
+              >
+                @if (absence.justification != null) {
+                {{ absence.justification }}
+                } @else { non justifié }
+              </span>
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
+              <button
+                (click)="viewDetail(absence.id)"
+                class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+              >
+                <i class="fas fa-eye mr-1"></i>
+                Détail
+              </button>
+            </td>
+          </tr>
+          } }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div
+      class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+    >
+      @if (isLoading) {
+      <!-- Skeleton Pagination -->
+      <div class="flex-1 flex justify-between sm:hidden">
+        <div class="h-9 bg-gray-200 rounded animate-pulse w-20"></div>
+        <div class="h-9 bg-gray-200 rounded animate-pulse w-20"></div>
+      </div>
+      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div class="h-4 bg-gray-200 rounded animate-pulse w-64"></div>
+        <div class="flex space-x-1">
+          @for (item of [1,2,3,4,5]; track $index) {
+          <div class="h-9 w-9 bg-gray-200 rounded animate-pulse"></div>
+          }
+        </div>
+      </div>
+      } @else {
+      <!-- Actual Pagination -->
+      <div class="flex-1 flex justify-between sm:hidden">
+        <button
+          class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+        >
+          Précédent
+        </button>
+        <button
+          class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+        >
+          Suivant
+        </button>
+      </div>
+      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-gray-700">
+            Affichage de <span class="font-medium">1</span> à
+            <span class="font-medium">10</span> sur
+            <span class="font-medium">97</span> résultats
+          </p>
+        </div>
+        <div>
+          <nav
+            class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+          >
+            <button
+              class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button
+              class="bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+            >
+              1
+            </button>
+            <button
+              class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+            >
+              2
+            </button>
+            <button
+              class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+            >
+              3
+            </button>
+            <button
+              class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </nav>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</main>

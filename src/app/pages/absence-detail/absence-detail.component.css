@@ -1,0 +1,90 @@
+.card-gradient {
+  background: linear-gradient(135deg, #3C1F0D 0%, #E07B1E 100%);
+}
+
+.status-gradient {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Animation pour les boutons */
+.btn-hover-scale {
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn-hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Style pour les cartes avec ombre personnalisée */
+.custom-shadow {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Animation pour les icônes */
+.icon-bounce {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Style pour le loading skeleton */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+/* Replace .ml-[230px] with a valid class name, e.g., .ml-230px */
+.ml-230px {
+  margin-left: 0;
+  padding: 1rem;
+}
+
+.grid-cols-3 {
+  grid-template-columns: 1fr;
+}
+
+/* Replace .lg\:col-span-2 with a valid class name, e.g., .lg-col-span-2 */
+.lg-col-span-2 {
+  grid-column: span 1;
+}
+}
