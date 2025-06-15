@@ -1,51 +1,40 @@
 import { Injectable } from '@angular/core';
+import { LoginResponse } from '../../models/utilisateur.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CookieService {
-  setCookie(
+  static setCookie(
     name: string,
-    value: string,
-    days: number = 1,
-    secure: boolean = true
+    value: object | string | number,
+    days: number = 1
   ): void {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-
-    let cookieString = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
-
-    if (secure) {
-      cookieString += '; Secure';
-    }
-
-    // SameSite pour la sécurité CSRF
-    cookieString += '; SameSite=Lax';
-
-    document.cookie = cookieString;
+    const expires = new Date(Date.now() + days * 86400000).toUTCString();
+    const stringValue = encodeURIComponent(JSON.stringify(value));
+    document.cookie = `${name}=${stringValue}; expires=${expires}; path=/`;
   }
 
-  getCookie(name: string): string | null {
-    const nameEQ = name + '=';
-    const ca = document.cookie.split(';');
-
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1, c.length);
-      }
-      if (c.indexOf(nameEQ) === 0) {
-        return c.substring(nameEQ.length, c.length);
-      }
-    }
-    return null;
+  static getCookie(name: string): string | null {
+    const regex = new RegExp('(^| )' + name + '=([^;]+)');
+    const match = regex.exec(document.cookie);
+    return match ? decodeURIComponent(match[2]) : null;
   }
 
-  deleteCookie(name: string): void {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; Secure; SameSite=Strict`;
+  static deleteCookie(name: string): void {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+  }
+
+  static getUserFromCookie(): LoginResponse | null {
+    const userJson = CookieService.getCookie('currentUser');
+    try {
+      return userJson ? JSON.parse(userJson) : null;
+    } catch {
+      return null;
+    }
   }
 
   cookieExists(name: string): boolean {
-    return this.getCookie(name) !== null;
+    return CookieService.getCookie(name) !== null;
   }
 }

@@ -7,13 +7,14 @@ import {
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { CookieService } from './cookie.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly currentUser = new BehaviorSubject<LoginResponse | null>(
-    null
+    CookieService.getUserFromCookie()
   );
   currentUser$ = this.currentUser.asObservable();
 
@@ -28,7 +29,11 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => this.currentUser.next(res)),
+        tap((res) => {
+          this.currentUser.next(res);
+          CookieService.setCookie('currentUser', res.utilisateur);
+          CookieService.setCookie('roleUser', res.role);
+        }),
         map(() => true),
         catchError(() => of(false))
       );
@@ -41,6 +46,8 @@ export class AuthService {
       })
       .subscribe(() => {
         this.currentUser.next(null);
+        CookieService.deleteCookie('currentUser');
+        CookieService.deleteCookie('roleUser');
         this.router.navigate(['/login']);
       });
   }
@@ -53,6 +60,8 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.currentUser.next(response);
+          CookieService.setCookie('currentUser', response.utilisateur);
+          CookieService.setCookie('roleUser', response.role);
         }),
         map(() => true),
         catchError((error) => {

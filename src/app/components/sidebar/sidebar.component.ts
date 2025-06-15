@@ -15,6 +15,7 @@ export class SidebarComponent {
   constructor(private readonly authService: AuthService) {}
 
   ngOnInit(): void {
+    console.log(this.currentUser);
     if (this.authService.isLoggedIn()) {
       this.authService.currentUser$.subscribe((user) => {
         this.currentUser = user ?? undefined;
