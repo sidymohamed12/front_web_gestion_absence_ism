@@ -3,6 +3,18 @@ import {
   StatutJustification,
 } from './justification.model';
 
+export interface PaginatedAbsences {
+  totalItems: number;
+  pages: number[];
+  last: boolean;
+  totalPages: number;
+  type: string;
+  currentPage: number;
+  results: Absence[];
+  first: boolean;
+  status: string;
+}
+
 export interface Absence {
   id: string;
   createdAt: Date;

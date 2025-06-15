@@ -4,14 +4,27 @@
 <main class="ml-[230px] p-8 min-h-screen">
   <!-- Header Section -->
   <div class="mb-8 animate-fade-in">
+    <button
+      routerLink="/absences"
+      class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-300 flex items-center gap-2 mb-5"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 19l-7-7m0 0l7-7m-7 7h18"
+        ></path>
+      </svg>
+      Retour
+    </button>
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
-        <button
-          class="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-          onclick="history.back()"
-        >
-          <i class="fas fa-arrow-left text-gray-600"></i>
-        </button>
         <div>
           <h1 class="text-3xl font-bold text-gray-900">Détail de l'Absence</h1>
           <p class="text-gray-600 mt-1">
@@ -374,17 +387,199 @@
             </p>
           </div>
 
+          <!-- Section des pièces jointes améliorée -->
           <div
-            class="flex items-center justify-center p-4"
-            *ngIf="absenceDetail?.justification?.documentPath"
+            class="bg-amber-50 rounded-xl p-4"
+            *ngIf="absenceDetail?.justification?.piecesJointes?.length"
           >
-            <button
-              (click)="downloadDocument()"
-              class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center"
-            >
-              <i class="fas fa-download mr-2"></i>
-              Télécharger le document justificatif
-            </button>
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-semibold text-amber-900 flex items-center">
+                <i class="fas fa-paperclip mr-2"></i>
+                Pièces jointes ({{
+                  absenceDetail?.justification?.piecesJointes?.length
+                }})
+              </h4>
+              <button
+                class="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200 flex items-center text-sm"
+                (click)="downloadAllAttachments()"
+                [disabled]="isDownloading"
+              >
+                <i class="fas fa-download mr-2"></i>
+                <span *ngIf="!isDownloading">Tout télécharger</span>
+                <span *ngIf="isDownloading">Téléchargement...</span>
+              </button>
+            </div>
+
+            <!-- Liste des pièces jointes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div
+                *ngFor="
+                  let pieceJointe of absenceDetail?.justification
+                    ?.piecesJointes;
+                  let i = index
+                "
+                class="bg-white rounded-lg border border-amber-200 p-3 hover:shadow-md transition-shadow duration-200"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center flex-1 min-w-0">
+                    <div class="flex-shrink-0 mr-3">
+                      <i class="text-2xl">
+                        <svg
+                          *ngIf="
+                            superbaseFileService.getFileType(pieceJointe) ===
+                            'other'
+                          "
+                          class="w-6 h-6 text-gray-500"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+
+                        <svg
+                          *ngIf="
+                            superbaseFileService.getFileType(pieceJointe) ===
+                            'doc'
+                          "
+                          class="w-6 h-6 text-blue-500"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M6 16v-3h.375a.626.626 0 0 1 .625.626v1.749a.626.626 0 0 1-.626.625H6Zm6-2.5a.5.5 0 1 1 1 0v2a.5.5 0 0 1-1 0v-2Z"
+                          />
+                          <path
+                            fill-rule="evenodd"
+                            d="M11 7V2h7a2 2 0 0 1 2 2v5h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2H3a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h6a2 2 0 0 0 2-2Zm7.683 6.006 1.335-.024-.037-2-1.327.024a2.647 2.647 0 0 0-2.636 2.647v1.706a2.647 2.647 0 0 0 2.647 2.647H20v-2h-1.335a.647.647 0 0 1-.647-.647v-1.706a.647.647 0 0 1 .647-.647h.018ZM5 11a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 9 15.375v-1.75A2.626 2.626 0 0 0 6.375 11H5Zm7.5 0a2.5 2.5 0 0 0-2.5 2.5v2a2.5 2.5 0 0 0 5 0v-2a2.5 2.5 0 0 0-2.5-2.5Z"
+                            clip-rule="evenodd"
+                          />
+                          <path
+                            d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z"
+                          />
+                        </svg>
+
+                        <svg
+                          *ngIf="
+                            superbaseFileService.getFileType(pieceJointe) ===
+                            'pdf'
+                          "
+                          class="w-6 h-6 text-red-500"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+
+                        <svg
+                          *ngIf="
+                            superbaseFileService.getFileType(pieceJointe) ===
+                            'image'
+                          "
+                          class="w-6 h-6 text-green-500"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Zm.394 9.553a1 1 0 0 0-1.817.062l-2.5 6A1 1 0 0 0 8 19h8a1 1 0 0 0 .894-1.447l-2-4A1 1 0 0 0 13.2 13.4l-.53.706-1.276-2.553ZM13 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900 truncate">
+                        {{ superbaseFileService.getFileName(pieceJointe) }}
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        {{
+                          superbaseFileService.getFileExtension(pieceJointe)
+                            | uppercase
+                        }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center space-x-2 ml-3">
+                    <!-- Bouton Visualiser -->
+                    <button
+                      class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors duration-200"
+                      (click)="viewAttachment(pieceJointe, i)"
+                      title="Visualiser"
+                    >
+                      <i class="fas fa-eye">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-eye-icon lucide-eye"
+                        >
+                          <path
+                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+                          />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                      </i>
+                    </button>
+
+                    <!-- Bouton Télécharger -->
+                    <button
+                      class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                      (click)="downloadAttachment(pieceJointe, i)"
+                      [disabled]="downloadingFiles[i]"
+                      title="Télécharger"
+                    >
+                      <i
+                        class="fas"
+                        [ngClass]="{
+                          'fa-download': !downloadingFiles[i],
+                          'fa-spinner fa-spin': downloadingFiles[i]
+                        }"
+                      ></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message si aucune pièce jointe -->
+          <div
+            class="bg-gray-50 rounded-xl p-4 text-center"
+            *ngIf="!absenceDetail?.justification?.piecesJointes?.length"
+          >
+            <i class="fas fa-file-times text-gray-400 text-2xl mb-2"></i>
+            <p class="text-gray-500">Aucune pièce jointe fournie</p>
           </div>
         </div>
       </div>

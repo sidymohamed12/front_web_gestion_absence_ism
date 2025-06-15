@@ -12,7 +12,7 @@ export interface Justification {
 export interface JustificationForDetailAbsence {
   id: string;
   description: string;
-  documentPath: string;
+  piecesJointes: string[];
   statut: StatutJustification;
   createdAt?: Date;
   dateValidation?: Date;

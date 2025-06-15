@@ -84,8 +84,9 @@
         >
         <select
           id="type-absence-select"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="w-full px-3 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-[#E07B1E] focus:border-[#E07B1E]"
           [disabled]="isLoading"
+          (change)="onTypeChange($event)"
         >
           <option value="">Tous les types</option>
           <option value="RETARD">Retard</option>
@@ -101,8 +102,9 @@
         <input
           id="date-input"
           type="date"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="w-full px-3 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-[#E07B1E] focus:border-[#E07B1E]"
           [disabled]="isLoading"
+          (change)="onDateChange($event)"
         />
       </div>
 
@@ -116,14 +118,15 @@
           id="etudiant-input"
           type="text"
           placeholder="Nom ou matricule"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="w-full px-3 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-[#E07B1E] focus:border-[#E07B1E]"
           [disabled]="isLoading"
         />
       </div>
       <div class="flex items-end">
         <button
-          class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full bg-[#E07B1E] text-white px-4 py-2 rounded-lg hover:bg-[#e07c1eec] transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           [disabled]="isLoading"
+          (click)="loadAbsences(0)"
         >
           <i class="fas fa-search mr-2"></i>
           Rechercher
@@ -307,11 +310,12 @@
     </div>
 
     <!-- Pagination -->
+    <!-- Pagination -->
     <div
       class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
     >
+      <!-- Loading -->
       @if (isLoading) {
-      <!-- Skeleton Pagination -->
       <div class="flex-1 flex justify-between sm:hidden">
         <div class="h-9 bg-gray-200 rounded animate-pulse w-20"></div>
         <div class="h-9 bg-gray-200 rounded animate-pulse w-20"></div>
@@ -325,25 +329,32 @@
         </div>
       </div>
       } @else {
-      <!-- Actual Pagination -->
+      <!-- Mobile version -->
       <div class="flex-1 flex justify-between sm:hidden">
         <button
+          (click)="previousPage()"
+          [disabled]="currentPage === 0"
           class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
         >
           Précédent
         </button>
         <button
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages - 1"
           class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
         >
           Suivant
         </button>
       </div>
+
+      <!-- Desktop version -->
       <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
         <div>
           <p class="text-sm text-gray-700">
-            Affichage de <span class="font-medium">1</span> à
-            <span class="font-medium">10</span> sur
-            <span class="font-medium">97</span> résultats
+            Affichage de
+            <span class="font-medium">{{ currentPage * 4 + 1 }}</span> à
+            <span class="font-medium">{{ (currentPage + 1) * 4 }}</span> sur
+            <span class="font-medium">{{ totalItems }}</span> résultats
           </p>
         </div>
         <div>
@@ -351,29 +362,62 @@
             class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
           >
             <button
+              (click)="previousPage()"
+              [disabled]="currentPage === 0"
               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <i class="fas fa-chevron-left"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-arrow-left-icon lucide-arrow-left"
+              >
+                <path d="m12 19-7-7 7-7" />
+                <path d="M19 12H5" />
+              </svg>
             </button>
+
+            <ng-container *ngFor="let page of pages">
+              <button
+                (click)="changePage(page)"
+                [ngClass]="{
+                  'bg-[#E07B1E] border-[#E07B1E] text-white':
+                    page === currentPage,
+                  'bg-white border-gray-300 text-gray-500 hover:bg-gray-50':
+                    page !== currentPage
+                }"
+                class="relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+              >
+                {{ page + 1 }}
+              </button>
+            </ng-container>
+
             <button
-              class="bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-            >
-              1
-            </button>
-            <button
-              class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-            >
-              2
-            </button>
-            <button
-              class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-            >
-              3
-            </button>
-            <button
+              (click)="nextPage()"
+              [disabled]="currentPage === totalPages - 1"
               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <i class="fas fa-chevron-right"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-arrow-right-icon lucide-arrow-right"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
             </button>
           </nav>
         </div>

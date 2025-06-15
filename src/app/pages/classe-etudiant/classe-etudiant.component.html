@@ -1,0 +1,431 @@
+<app-sidebar />
+
+<!-- Main Content -->
+<main class="ml-[230px] p-8">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+    <!-- Header avec breadcrumb -->
+    <div class="mb-8">
+      <nav class="flex mb-4" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+          <li class="inline-flex items-center">
+            <a
+              routerLink="/classes"
+              class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-[#E07B1E] transition-colors"
+            >
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+                ></path>
+              </svg>
+              Classes
+            </a>
+          </li>
+          <li aria-current="page">
+            <div class="flex items-center">
+              <svg
+                class="w-6 h-6 text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+                <ng-container *ngIf="!isLoading && classe">{{
+                  classe.nom
+                }}</ng-container>
+                <ng-container *ngIf="isLoading">
+                  <span
+                    class="animate-pulse bg-gray-200 rounded h-4 w-24 inline-block"
+                  ></span>
+                </ng-container>
+              </span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">
+            <ng-container *ngIf="!isLoading && classe"
+              >Détails de {{ classe.nom }}</ng-container
+            >
+            <ng-container *ngIf="isLoading">
+              <span
+                class="animate-pulse bg-gray-200 rounded h-8 w-64 inline-block"
+              ></span>
+            </ng-container>
+          </h1>
+          <p class="text-gray-600">
+            Informations de la classe et liste des étudiants
+          </p>
+        </div>
+
+        <button
+          routerLink="/classes"
+          class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-300 flex items-center gap-2"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
+          </svg>
+          Retour
+        </button>
+      </div>
+    </div>
+
+    <!-- Informations de la classe -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="flex items-center space-x-6">
+        <div class="bg-[#E07B1E] bg-opacity-10 rounded-full p-6">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-school text-white"
+          >
+            <path d="M14 22v-4a2 2 0 1 0-4 0v4" />
+            <path
+              d="m18 10 3.447 1.724a1 1 0 0 1 .553.894V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.382a1 1 0 0 1 .553-.894L6 10"
+            />
+            <path d="M18 5v17" />
+            <path d="m4 6 7.106-3.553a2 2 0 0 1 1.788 0L20 6" />
+            <path d="M6 5v17" />
+            <circle cx="12" cy="9" r="2" />
+          </svg>
+        </div>
+
+        <div class="flex-1">
+          <ng-container *ngIf="!isLoading && classe">
+            <h2 class="text-2xl font-bold text-[#3C1F0D] mb-2">
+              {{ classe.nom }}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <p class="text-sm text-gray-600">Filière</p>
+                <p class="text-lg font-semibold text-gray-800">
+                  {{ classe.filiere }}
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">Niveau</p>
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#E07B1E] bg-opacity-10 text-white"
+                >
+                  {{ classe.niveau }}
+                </span>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">Effectif Total</p>
+                <p class="text-2xl font-bold text-[#3C1F0D]">
+                  {{ etudiants.length }}
+                </p>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Loading skeleton pour les infos de la classe -->
+          <ng-container *ngIf="isLoading">
+            <div class="animate-pulse bg-gray-200 rounded h-8 w-48 mb-4"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <div
+                  class="animate-pulse bg-gray-200 rounded h-4 w-16 mb-2"
+                ></div>
+                <div class="animate-pulse bg-gray-200 rounded h-6 w-24"></div>
+              </div>
+              <div>
+                <div
+                  class="animate-pulse bg-gray-200 rounded h-4 w-16 mb-2"
+                ></div>
+                <div class="animate-pulse bg-gray-200 rounded h-6 w-20"></div>
+              </div>
+              <div>
+                <div
+                  class="animate-pulse bg-gray-200 rounded h-4 w-24 mb-2"
+                ></div>
+                <div class="animate-pulse bg-gray-200 rounded h-8 w-12"></div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-4">
+          <button
+            class="bg-[#E07B1E] hover:bg-[#d16a0a] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-300 flex items-center gap-2"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Ajouter Étudiant
+          </button>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (input)="filterEtudiants()"
+              placeholder="Rechercher un étudiant..."
+              class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E07B1E] focus:border-transparent w-64"
+            />
+            <svg
+              class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des étudiants -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-[#3C1F0D]">
+            Liste des Étudiants
+          </h2>
+          <span class="text-sm text-gray-600">
+            <ng-container *ngIf="!isLoading">
+              {{ filteredEtudiants.length }} étudiant(s)
+              <span
+                *ngIf="
+                  searchTerm && filteredEtudiants.length !== etudiants.length
+                "
+              >
+                sur {{ etudiants.length }}
+              </span>
+            </ng-container>
+          </span>
+        </div>
+      </div>
+
+      <!-- Loading Skeleton -->
+      <div *ngIf="isLoading" class="divide-y divide-gray-200">
+        <div *ngFor="let item of getSkeletonItems()" class="p-6">
+          <div class="flex items-center space-x-4">
+            <div class="animate-pulse bg-gray-200 rounded-full h-12 w-12"></div>
+            <div class="flex-1 space-y-2">
+              <div class="animate-pulse bg-gray-200 rounded h-4 w-3/4"></div>
+              <div class="animate-pulse bg-gray-200 rounded h-3 w-1/2"></div>
+            </div>
+            <div class="space-y-2">
+              <div class="animate-pulse bg-gray-200 rounded h-6 w-24"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Étudiants Data -->
+      <div
+        *ngIf="!isLoading && filteredEtudiants.length > 0"
+        class="divide-y divide-gray-200"
+      >
+        <div
+          *ngFor="let etudiant of filteredEtudiants; let i = index"
+          class="p-6 hover:bg-gray-50 transition-colors duration-200"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <div
+                class="w-16 h-16 card-gradient rounded-full flex items-center justify-center backdrop-blur-sm"
+              >
+                <span class="text-2xl font-bold text-white">
+                  {{ getInitials(etudiant.prenom, etudiant.nom) }}
+                </span>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-[#3C1F0D]">
+                  {{ etudiant.prenom }} {{ etudiant.nom }}
+                </h3>
+                <p class="text-gray-600">{{ etudiant.email }}</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+                  >
+                    {{ etudiant.matricule }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <button
+                class="text-[#E07B1E] hover:text-white p-2 rounded-lg hover:bg-[#E07B1E] hover:bg-opacity-10 transition-colors duration-200"
+                title="Modifier"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  ></path>
+                </svg>
+              </button>
+              <button
+                class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200"
+                title="Voir profil"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  ></path>
+                </svg>
+              </button>
+              <button
+                class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors duration-200"
+                title="Supprimer"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  ></path>
+                </svg>
+              </button>
+              <button
+                class="bg-[#3C1F0D] hover:bg-[#2a1409] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300"
+              >
+                Profil
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="!isLoading && filteredEtudiants.length === 0 && !searchTerm"
+        class="text-center py-12"
+      >
+        <svg
+          class="mx-auto h-24 w-24 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          ></path>
+        </svg>
+        <h3 class="mt-4 text-lg font-semibold text-gray-900">
+          Aucun étudiant dans cette classe
+        </h3>
+        <p class="mt-2 text-gray-600">
+          Commencez par ajouter des étudiants à cette classe.
+        </p>
+        <button
+          class="mt-4 bg-[#E07B1E] hover:bg-[#d16a0a] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-300"
+        >
+          Ajouter un étudiant
+        </button>
+      </div>
+
+      <!-- No Search Results -->
+      <div
+        *ngIf="!isLoading && filteredEtudiants.length === 0 && searchTerm"
+        class="text-center py-12"
+      >
+        <svg
+          class="mx-auto h-24 w-24 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
+        </svg>
+        <h3 class="mt-4 text-lg font-semibold text-gray-900">
+          Aucun résultat trouvé
+        </h3>
+        <p class="mt-2 text-gray-600">
+          Aucun étudiant ne correspond à votre recherche "{{ searchTerm }}".
+        </p>
+        <button
+          (click)="clearSearch()"
+          class="mt-4 bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-300"
+        >
+          Effacer la recherche
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

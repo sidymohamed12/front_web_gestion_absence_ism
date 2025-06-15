@@ -92,7 +92,7 @@
             <p class="text-sm font-medium text-gray-600">Filières</p>
             <p class="text-3xl font-bold text-[#3C1F0D]">
               <ng-container *ngIf="!isLoading; else skeletonNumber3">
-                7
+                {{ uniqueFilieres.length }}
               </ng-container>
               <ng-template #skeletonNumber3>
                 <span
@@ -178,20 +178,49 @@
             </svg>
             Ajouter Classe
           </button>
+
+          <!-- Bouton Reset Filters -->
+          <button
+            *ngIf="searchTerm || selectedFiliere"
+            (click)="resetFilters()"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 flex items-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+            Réinitialiser
+          </button>
         </div>
 
         <div class="flex items-center gap-4">
+          <!-- Filtre par filière -->
           <select
+            [(ngModel)]="selectedFiliere"
+            (ngModelChange)="onFiliereChange()"
             class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#E07B1E] focus:border-transparent"
           >
             <option value="">Toutes les filières</option>
-            <option value="informatique">Informatique</option>
-            <option value="gestion">Gestion</option>
-            <option value="marketing">Marketing</option>
+            <option *ngFor="let filiere of uniqueFilieres" [value]="filiere">
+              {{ filiere }}
+            </option>
           </select>
+
+          <!-- Champ de recherche -->
           <div class="relative">
             <input
               type="text"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearchChange()"
               placeholder="Rechercher une classe..."
               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E07B1E] focus:border-transparent"
             />
@@ -211,6 +240,21 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Results Info -->
+    <div
+      *ngIf="!isLoading && (searchTerm || selectedFiliere)"
+      class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4"
+    >
+      <p class="text-blue-800 text-sm">
+        <span class="font-medium">{{ filteredClasses.length }}</span>
+        classe(s) trouvée(s)
+        <span *ngIf="searchTerm"> pour "{{ searchTerm }}"</span>
+        <span *ngIf="selectedFiliere">
+          dans la filière "{{ selectedFiliere }}"</span
+        >
+      </p>
     </div>
 
     <!-- Classes List -->
@@ -239,11 +283,11 @@
 
       <!-- Classes Data -->
       <div
-        *ngIf="!isLoading && classes.length > 0"
+        *ngIf="!isLoading && filteredClasses.length > 0"
         class="divide-y divide-gray-200"
       >
         <div
-          *ngFor="let classe of classes"
+          *ngFor="let classe of filteredClasses"
           class="p-6 hover:bg-gray-50 transition-colors duration-200"
         >
           <div class="flex items-center justify-between">
@@ -320,6 +364,7 @@
               <button
                 class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200"
                 title="Voir étudiants"
+                (click)="onViewEtudiants(classe.id)"
               >
                 <svg
                   class="w-5 h-5"
@@ -363,7 +408,43 @@
         </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- Empty State - No Results -->
+      <div
+        *ngIf="
+          !isLoading &&
+          filteredClasses.length === 0 &&
+          (searchTerm || selectedFiliere)
+        "
+        class="text-center py-12"
+      >
+        <svg
+          class="mx-auto h-24 w-24 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
+        </svg>
+        <h3 class="mt-4 text-lg font-semibold text-gray-900">
+          Aucun résultat trouvé
+        </h3>
+        <p class="mt-2 text-gray-600">
+          Essayez de modifier vos critères de recherche.
+        </p>
+        <button
+          (click)="resetFilters()"
+          class="mt-4 bg-[#E07B1E] hover:bg-[#d16a0a] text-white px-6 py-2 rounded-lg font-medium transition-colors duration-300"
+        >
+          Réinitialiser les filtres
+        </button>
+      </div>
+
+      <!-- Empty State - No Classes -->
       <div *ngIf="!isLoading && classes.length === 0" class="text-center py-12">
         <svg
           class="mx-auto h-24 w-24 text-gray-400"

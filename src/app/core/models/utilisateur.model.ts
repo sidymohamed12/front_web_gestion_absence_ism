@@ -64,3 +64,11 @@ export interface UserProfile {
   email: string;
   role: Role;
 }
+
+export interface EtudiantListDto {
+  id: string;
+  matricule: string;
+  nom: string;
+  prenom: string;
+  email: string;
+}

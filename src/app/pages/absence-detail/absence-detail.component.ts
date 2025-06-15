@@ -3,17 +3,18 @@ import { Component, inject, OnInit } from '@angular/core';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { AbsenceDetail } from '../../core/models/absence.model';
 import { AbsenceService } from '../../core/services/impl/absence.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/impl/auth.service';
 import {
   JustificationTraitementRequest,
   StatutJustification,
 } from '../../core/models/justification.model';
 import { JustificationService } from '../../core/services/impl/justification.service';
+import { SupabaseFileServiceService } from '../../core/services/impl/supabase-file-service.service';
 
 @Component({
   selector: 'app-absence-detail',
-  imports: [CommonModule, SidebarComponent],
+  imports: [CommonModule, SidebarComponent, RouterModule],
   templateUrl: './absence-detail.component.html',
   styleUrl: './absence-detail.component.css',
 })
@@ -21,6 +22,9 @@ export class AbsenceDetailComponent implements OnInit {
   private readonly absenceService: AbsenceService = inject(AbsenceService);
   private readonly justificationService: JustificationService =
     inject(JustificationService);
+  public readonly superbaseFileService: SupabaseFileServiceService = inject(
+    SupabaseFileServiceService
+  );
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
   private readonly authService: AuthService = inject(AuthService);
@@ -32,7 +36,12 @@ export class AbsenceDetailComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
 
+  // Nouveaux états pour la gestion des téléchargements
+  isDownloading = false;
+  downloadingFiles: boolean[] = [];
+
   ngOnInit(): void {
+    console.log(this.authService.getCurrentUser());
     this.loadAdminId();
     this.loadAbsenceDetail();
   }
@@ -51,6 +60,12 @@ export class AbsenceDetailComponent implements OnInit {
       next: (data: AbsenceDetail) => {
         this.absenceDetail = data;
         this.isLoading = false;
+        // Initialiser le tableau de téléchargement
+        if (data.justification?.piecesJointes) {
+          this.downloadingFiles = new Array(
+            data.justification.piecesJointes.length
+          ).fill(false);
+        }
         console.log('Absence detail loaded:', data);
       },
       error: (err) => {
@@ -76,6 +91,29 @@ export class AbsenceDetailComponent implements OnInit {
     }
 
     this.adminId = user.realId;
+  }
+
+  async viewAttachment(url: string, index: number): Promise<void> {
+    return this.superbaseFileService.viewAttachment(
+      url,
+      index,
+      this.downloadingFiles
+    );
+  }
+
+  async downloadAttachment(url: string, index: number): Promise<void> {
+    return this.superbaseFileService.downloadAttachment(
+      url,
+      index,
+      this.downloadingFiles
+    );
+  }
+
+  async downloadAllAttachments(): Promise<void> {
+    return this.superbaseFileService.downloadAllAttachments(
+      this.absenceDetail,
+      this.isDownloading
+    );
   }
 
   traiterJustification(statut: StatutJustification): void {
@@ -113,24 +151,10 @@ export class AbsenceDetailComponent implements OnInit {
 
   viewHistory(): void {
     if (this.absenceDetail?.absence) {
-      // Logique pour voir l'historique de l'étudiant
       console.log(
         'Viewing history for student:',
         this.absenceDetail.absence.etudiantMatricule
       );
-      // Vous pouvez naviguer vers une page d'historique des absences
-    }
-  }
-
-  downloadDocument(): void {
-    if (this.absenceDetail?.justification?.documentPath) {
-      // Logique pour télécharger le document justificatif
-      console.log(
-        'Downloading document:',
-        this.absenceDetail.justification.documentPath
-      );
-      // Vous pouvez implémenter le téléchargement du document
-      window.open(this.absenceDetail.justification.documentPath, '_blank');
     }
   }
 
@@ -139,7 +163,6 @@ export class AbsenceDetailComponent implements OnInit {
   }
 
   exportDetail(): void {
-    // Logique pour exporter les détails (PDF, Excel, etc.)
     console.log('Exporting absence detail');
   }
 
