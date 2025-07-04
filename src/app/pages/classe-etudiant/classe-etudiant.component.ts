@@ -63,6 +63,7 @@ export class ClasseEtudiantComponent {
         this.etudiants = data;
         this.filteredEtudiants = [...data];
         this.isLoading = false;
+        console.log(data);
       },
       error: (err) => {
         console.error('Error loading etudiants:', err);
@@ -103,18 +104,12 @@ export class ClasseEtudiantComponent {
   }
 
   getSkeletonItems(): number[] {
-    return Array(8).fill(0); // Affiche 8 lignes de skeleton par défaut
+    return Array(8).fill(0);
   }
 
-  // Méthodes pour les actions (à implémenter selon vos besoins)
   onEditEtudiant(etudiantId: string): void {
     // Navigation vers la page d'édition de l'étudiant
     this.router.navigate(['/etudiants', etudiantId, 'edit']);
-  }
-
-  onViewEtudiantProfile(etudiantId: string): void {
-    // Navigation vers le profil de l'étudiant
-    this.router.navigate(['/etudiants', etudiantId]);
   }
 
   onDeleteEtudiant(etudiantId: string): void {
@@ -130,7 +125,6 @@ export class ClasseEtudiantComponent {
   }
 
   onAddEtudiant(): void {
-    // Navigation vers la page d'ajout d'étudiant avec l'ID de la classe
     this.router.navigate(['/etudiants/add'], {
       queryParams: { classeId: this.classeId },
     });
@@ -140,6 +134,10 @@ export class ClasseEtudiantComponent {
     // Logique pour exporter la liste des étudiants
     console.log('Exporter la liste des étudiants');
     // Vous pouvez implémenter l'export en CSV, PDF, etc.
+  }
+
+  viewEtudiant(etudiantId: string) {
+    this.router.navigate(['/etudiants', etudiantId]);
   }
 
   onGoBack(): void {

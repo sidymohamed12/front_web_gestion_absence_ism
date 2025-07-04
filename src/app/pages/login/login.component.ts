@@ -30,7 +30,6 @@ export class LoginComponent {
       .subscribe({
         next: (res) => {
           this.isLoading = false;
-          this.auth.setCurrentUser(res);
           this.router.navigate(['/absences']);
         },
         error: (error) => {

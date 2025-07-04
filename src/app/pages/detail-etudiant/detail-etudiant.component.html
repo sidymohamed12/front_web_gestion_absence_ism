@@ -1,0 +1,513 @@
+<app-sidebar></app-sidebar>
+
+<main class="ml-[230px] p-8">
+  <div class="min-h-screen p-6">
+    <!-- Header avec navigation -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 mb-4">
+        <button
+          (click)="goBack()"
+          class="text-[#3C1F0D] hover:text-[#E07B1E] transition-colors duration-200 p-2 rounded-lg hover:bg-orange-100"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-3xl font-bold text-[#3C1F0D]">Profil Étudiant</h1>
+          <p class="text-[#3C1F0D]/70">
+            Informations détaillées et historique des absences
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div
+      *ngIf="error && !isLoading"
+      class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6"
+    >
+      <div class="flex items-center">
+        <svg
+          class="w-5 h-5 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+          ></path>
+        </svg>
+        {{ error }}
+      </div>
+    </div>
+
+    <!-- Skeleton du profil de l'étudiant -->
+    <div
+      *ngIf="isLoading"
+      class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-orange-200"
+    >
+      <div class="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+        <!-- Skeleton Avatar et infos principales -->
+        <div class="flex items-center gap-6">
+          <div class="relative">
+            <div class="bg-gray-300 rounded-full w-20 h-20 animate-pulse"></div>
+            <div
+              class="absolute -bottom-2 -right-2 bg-gray-300 rounded-full w-6 h-6 animate-pulse"
+            ></div>
+          </div>
+          <div>
+            <div
+              class="h-8 bg-gray-300 rounded-lg w-48 mb-2 animate-pulse"
+            ></div>
+            <div
+              class="h-4 bg-gray-300 rounded-lg w-64 mb-2 animate-pulse"
+            ></div>
+            <div class="flex items-center gap-3">
+              <div
+                class="h-6 bg-gray-300 rounded-full w-24 animate-pulse"
+              ></div>
+              <div
+                class="h-6 bg-gray-300 rounded-full w-32 animate-pulse"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <!-- Skeleton Actions -->
+        <div class="flex-1 flex justify-end">
+          <div class="flex items-center gap-3">
+            <div class="h-12 bg-gray-300 rounded-lg w-40 animate-pulse"></div>
+            <div class="h-12 bg-gray-300 rounded-lg w-32 animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profil de l'étudiant -->
+    <div
+      *ngIf="!isLoading && detailEtudiant"
+      class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-orange-200 hover:shadow-2xl transition-shadow duration-300"
+    >
+      <div class="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+        <!-- Avatar et infos principales -->
+        <div class="flex items-center gap-6">
+          <div class="relative">
+            <div
+              class="bg-gradient-to-br from-[#E07B1E] to-[#3C1F0D] rounded-full p-6 shadow-lg"
+            >
+              <svg
+                class="w-16 h-16 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
+              </svg>
+            </div>
+            <div
+              class="absolute -bottom-2 -right-2 bg-green-500 rounded-full w-6 h-6 flex items-center justify-center"
+            >
+              <svg
+                class="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-[#3C1F0D] mb-2">
+              {{ detailEtudiant.prenom }} {{ detailEtudiant.nom }}
+            </h2>
+            <p class="text-[#3C1F0D]/60 mb-1">
+              {{ detailEtudiant.email }}
+            </p>
+            <div class="flex items-center gap-3">
+              <span
+                *ngIf="detailEtudiant.matricule"
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-[#3C1F0D]"
+              >
+                {{ detailEtudiant.matricule }}
+              </span>
+              <span
+                *ngIf="detailEtudiant.classe"
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#E07B1E]/20 text-[#E07B1E] border border-[#E07B1E]/30"
+              >
+                {{ detailEtudiant.classe }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex-1 flex justify-end">
+          <div class="flex items-center gap-3">
+            <button
+              class="bg-[#E07B1E] hover:bg-[#3C1F0D] text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-1"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Envoyer un message
+            </button>
+            <button
+              class="bg-[#3C1F0D] hover:bg-[#E07B1E] text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-1"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                ></path>
+              </svg>
+              Modifier
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton des statistiques -->
+    <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div
+        *ngFor="let item of getSkeletonItems().slice(0, 3)"
+        class="bg-white rounded-xl shadow-lg p-6"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <div class="h-4 bg-gray-300 rounded w-24 mb-2 animate-pulse"></div>
+            <div class="h-8 bg-gray-300 rounded w-12 animate-pulse"></div>
+          </div>
+          <div
+            class="bg-gray-300 p-3 rounded-full w-14 h-14 animate-pulse"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques des absences -->
+    <div
+      *ngIf="!isLoading && detailEtudiant"
+      class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+    >
+      <!-- Total Absences -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-[#3C1F0D]/70">Total Absences</p>
+            <p class="text-3xl font-bold text-[#3C1F0D]">
+              {{ getTotalAbsences() }}
+            </p>
+          </div>
+          <div class="bg-red-100 p-3 rounded-full">
+            <svg
+              class="w-8 h-8 text-red-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Retards -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#E07B1E] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-[#3C1F0D]/70">Retards</p>
+            <p class="text-3xl font-bold text-[#3C1F0D]">
+              {{ getTotalRetards() }}
+            </p>
+          </div>
+          <div class="bg-[#E07B1E]/20 p-3 rounded-full">
+            <svg
+              class="w-8 h-8 text-[#E07B1E]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Absences Complètes -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#3C1F0D] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-[#3C1F0D]/70">
+              Absences Complètes
+            </p>
+            <p class="text-3xl font-bold text-[#3C1F0D]">
+              {{ getTotalAbsencesCompletes() }}
+            </p>
+          </div>
+          <div class="bg-[#3C1F0D]/20 p-3 rounded-full">
+            <svg
+              class="w-8 h-8 text-[#3C1F0D]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Historique des Absences -->
+    <div
+      class="bg-white rounded-xl shadow-lg overflow-hidden border border-orange-200"
+    >
+      <!-- Header avec filtres -->
+      <div
+        class="px-6 py-4 border-b border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50"
+      >
+        <div
+          class="flex flex-col sm:flex-row justify-between items-center gap-4"
+        >
+          <h3 class="text-xl font-semibold text-[#3C1F0D]">
+            Historique des Absences
+          </h3>
+          <div *ngIf="!isLoading" class="flex items-center gap-4">
+            <select
+              [(ngModel)]="selectedTypeAbsences"
+              (change)="onFilterChange()"
+              class="border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#E07B1E] focus:border-transparent text-[#3C1F0D] bg-white"
+            >
+              <option value="">Tous les types</option>
+              <option value="ABSENCE_COMPLETE">Absences Complètes</option>
+              <option value="RETARD">Retards</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skeleton de la liste des absences -->
+      <div *ngIf="isLoading" class="divide-y divide-orange-200">
+        <div *ngFor="let item of getSkeletonItems()" class="p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div
+                class="bg-gray-300 p-2 rounded-full w-9 h-9 animate-pulse"
+              ></div>
+              <div>
+                <div
+                  class="h-5 bg-gray-300 rounded w-48 mb-2 animate-pulse"
+                ></div>
+                <div class="h-4 bg-gray-300 rounded w-64 animate-pulse"></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div
+                class="h-6 bg-gray-300 rounded-full w-16 animate-pulse"
+              ></div>
+              <div class="bg-gray-300 rounded w-5 h-5 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Liste des absences -->
+      <div
+        *ngIf="!isLoading && getFilteredAbsences().length > 0"
+        class="divide-y divide-orange-200"
+      >
+        <div
+          *ngFor="let absence of getFilteredAbsences()"
+          class="p-6 hover:bg-gray-50 transition-colors duration-200"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div
+                class="p-2 rounded-full"
+                [ngClass]="{
+                  'bg-[#E07B1E]/20': absence.type === 'RETARD',
+                  'bg-red-100': absence.type === 'ABSENCE_COMPLETE'
+                }"
+              >
+                <svg
+                  class="w-5 h-5"
+                  [ngClass]="{
+                    'text-[#E07B1E]': absence.type === 'RETARD',
+                    'text-red-600': absence.type === 'ABSENCE_COMPLETE'
+                  }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    *ngIf="absence.type === 'RETARD'"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+
+                  <path
+                    *ngIf="absence.type === 'ABSENCE_COMPLETE'"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-semibold text-[#3C1F0D]">
+                  {{ getTypeAbsenceLabel(absence.type) }} -
+                  {{ absence.nomCours }}
+                </h4>
+                <p class="text-sm text-[#3C1F0D]/60">
+                  {{ absence.heurePointage | date : "dd/MM/yyyy" }} •
+                  {{ absence.heurePointage | date : "EEEE" }}
+                  <span
+                    *ngIf="absence.minutesRetard && absence.type === 'RETARD'"
+                  >
+                    ({{ absence.minutesRetard }} min de retard)
+                  </span>
+                  <span *ngIf="absence.salle">
+                    • Salle: {{ absence.salle }}</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span
+                class="px-3 py-1 rounded-full text-xs font-medium"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-800':
+                    absence.statutJustification === 'EN_ATTENTE',
+                  'bg-green-100 text-green-800':
+                    absence.statutJustification === 'VALIDEE',
+                  'bg-red-100 text-red-800':
+                    absence.statutJustification === 'REJETEE'
+                }"
+              >
+                {{ getJustificationLabel(absence.statutJustification) }}
+              </span>
+              <button
+                (click)="viewDetailAbsence(absence.id)"
+                class="text-[#E07B1E] hover:text-[#3C1F0D] transition-colors"
+                title="Voir les détails"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- État vide -->
+      <div
+        *ngIf="!isLoading && getFilteredAbsences().length === 0"
+        class="text-center py-12"
+      >
+        <svg
+          class="mx-auto h-24 w-24 text-[#E07B1E]/50"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+        <h4 class="mt-4 text-lg font-semibold text-[#3C1F0D]">
+          Aucune absence trouvée
+        </h4>
+        <p class="mt-2 text-[#3C1F0D]/60">
+          Cet étudiant n'a aucune absence enregistrée ou correspondant aux
+          filtres sélectionnés.
+        </p>
+      </div>
+    </div>
+  </div>
+</main>

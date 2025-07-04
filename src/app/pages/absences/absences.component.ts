@@ -1,6 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AbsenceService } from '../../core/services/impl/absence.service';
-import { Absence, TypeAbsence } from '../../core/models/absence.model';
+import {
+  Absence,
+  StatAbsence,
+  TypeAbsence,
+} from '../../core/models/absence.model';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { Router } from '@angular/router';
@@ -18,9 +22,10 @@ export class AbsencesComponent implements OnInit {
   private readonly router: Router = inject(Router);
 
   absences: Absence[] = [];
+  statAbsence?: StatAbsence;
+  totalItems = 0;
   totalPages = 0;
   currentPage = 0;
-  totalItems = 0;
   pages: number[] = [];
   public TypeAbsence = TypeAbsence;
   selectedType?: TypeAbsence;
@@ -35,6 +40,14 @@ export class AbsencesComponent implements OnInit {
 
   loadAbsences(page: number = 0): void {
     this.isLoading = true;
+    this.absenceService.getStatAbsence().subscribe({
+      next: (stat) => {
+        this.statAbsence = stat;
+      },
+      error: (err) => {
+        console.error('Erreur statAbsence:', err);
+      },
+    });
     this.absenceService
       .getAbsence(page, this.selectedType, this.selectedDate)
       .subscribe({
@@ -45,6 +58,7 @@ export class AbsencesComponent implements OnInit {
           this.currentPage = response.currentPage;
           this.pages = Array.from({ length: response.totalPages }, (_, i) => i);
           this.isLoading = false;
+          console.log(response.results);
         },
         error: (err) => {
           console.error('Erreur:', err);
@@ -58,13 +72,13 @@ export class AbsencesComponent implements OnInit {
     this.selectedType = select.value
       ? (select.value as TypeAbsence)
       : undefined;
-    this.loadAbsences(0); // Reset à la première page
+    this.loadAbsences(0);
   }
 
   onDateChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedDate = input.value ? new Date(input.value) : undefined;
-    this.loadAbsences(0); // Reset à la première page
+    this.loadAbsences(0);
   }
 
   changePage(page: number): void {
@@ -82,7 +96,7 @@ export class AbsencesComponent implements OnInit {
   }
 
   getSkeletonItems(): number[] {
-    return Array(5).fill(0);
+    return Array(4).fill(0);
   }
 
   viewDetail(absenceId: string) {

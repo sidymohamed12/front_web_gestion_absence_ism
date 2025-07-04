@@ -4,6 +4,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import {
   AbsenceDetail,
   PaginatedAbsences,
+  StatAbsence,
   TypeAbsence,
 } from '../../models/absence.model';
 import { IAbsenceService } from '../IAbsenceService';
@@ -12,7 +13,8 @@ import { IAbsenceService } from '../IAbsenceService';
   providedIn: 'root',
 })
 export class AbsenceService implements IAbsenceService {
-  private readonly apiUrl = 'http://localhost:8080/api/web/absences';
+  private readonly apiUrl =
+    'https://ism-absences-api.onrender.com/api/web/absences';
   constructor(private readonly http: HttpClient) {}
 
   // récupérer tous les absences
@@ -34,11 +36,19 @@ export class AbsenceService implements IAbsenceService {
     });
   }
 
-  // Récupérer une absence par ID
   getAbsenceDetail(id: string): Observable<AbsenceDetail> {
     return this.http.get<AbsenceDetail>(`${this.apiUrl}/${id}`).pipe(
       catchError((error) => {
         console.error('Error fetching absence detail:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getStatAbsence(): Observable<StatAbsence> {
+    return this.http.get<StatAbsence>(`${this.apiUrl}/stat`).pipe(
+      catchError((error) => {
+        console.error('Error fetching Satat absence:', error);
         return throwError(() => error);
       })
     );

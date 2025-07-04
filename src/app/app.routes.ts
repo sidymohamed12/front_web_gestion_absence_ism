@@ -7,6 +7,7 @@ import { AbsenceDetailComponent } from './pages/absence-detail/absence-detail.co
 import { VigilesComponent } from './pages/vigiles/vigiles.component';
 import { EtudiantsComponent } from './pages/etudiants/etudiants.component';
 import { ClasseEtudiantComponent } from './pages/classe-etudiant/classe-etudiant.component';
+import { DetailEtudiantComponent } from './pages/detail-etudiant/detail-etudiant.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: 'classes/:id/etudiants', component: ClasseEtudiantComponent },
       { path: 'vigiles', component: VigilesComponent },
       { path: 'etudiants', component: EtudiantsComponent },
+      { path: 'etudiants/:id', component: DetailEtudiantComponent },
       { path: 'logout', redirectTo: 'login' },
     ],
   },

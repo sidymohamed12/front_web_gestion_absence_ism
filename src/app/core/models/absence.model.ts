@@ -20,13 +20,14 @@ export interface Absence {
   createdAt: Date;
   type: TypeAbsence;
   heurePointage?: Date;
+  heureDebut: Date;
   minutesRetard?: number;
-  justification: StatutJustification;
+  statutJustification: StatutJustification;
   etudiantNom: string;
   etudiantPrenom: string;
   etudiantMatricule: string;
-  coursNom: string;
-  salleNom: string;
+  nomCours: string;
+  salle: string;
   coursJour: string;
 }
 
@@ -44,4 +45,13 @@ export interface ApiResponse<T> {
   results: T[];
   status: string;
   type: string;
+}
+
+export interface StatAbsence {
+  totalAbsence: number;
+  totalRetard: number;
+  totalAbsenceRetard: number;
+  totalJustifie: number;
+  totalNonJustifie: number;
+  totalTraite: number;
 }

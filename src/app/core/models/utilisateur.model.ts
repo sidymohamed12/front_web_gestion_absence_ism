@@ -71,4 +71,5 @@ export interface EtudiantListDto {
   nom: string;
   prenom: string;
   email: string;
+  idUser: string;
 }

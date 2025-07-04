@@ -9,7 +9,7 @@ import { EtudiantListDto } from '../../models/utilisateur.model';
   providedIn: 'root',
 })
 export class ClasseService implements IClasseService {
-  private readonly apiUrl = 'http://localhost:8080/api/web';
+  private readonly apiUrl = 'https://ism-absences-api.onrender.com/api/web';
   constructor(private readonly http: HttpClient) {}
 
   // récupérer tous les absences

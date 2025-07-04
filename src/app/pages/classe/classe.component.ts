@@ -18,13 +18,15 @@ export class ClasseComponent {
 
   classes: Classe[] = [];
   filteredClasses: Classe[] = [];
+  totalEtudiant = 0;
+
   isLoading = true;
   error = '';
   searchTerm = '';
   selectedFiliere = '';
 
   get skeletonItems() {
-    return Array(6).fill(0); // Affiche 6 lignes de skeleton par défaut
+    return Array(4).fill(0);
   }
 
   ngOnInit(): void {
@@ -66,17 +68,14 @@ export class ClasseComponent {
     });
   }
 
-  // Méthode appelée lors de la saisie dans le champ de recherche
   onSearchChange(): void {
     this.filterClasses();
   }
 
-  // Méthode appelée lors du changement de filière
   onFiliereChange(): void {
     this.filterClasses();
   }
 
-  // Méthode pour réinitialiser les filtres
   resetFilters(): void {
     this.searchTerm = '';
     this.selectedFiliere = '';
@@ -91,8 +90,14 @@ export class ClasseComponent {
     return Array(5).fill(0);
   }
 
-  // Getter pour obtenir les filières uniques
   get uniqueFilieres(): string[] {
     return [...new Set(this.classes.map((classe) => classe.filiere))];
+  }
+
+  public get Totaltudiant(): number {
+    return this.filteredClasses.reduce(
+      (sum, classe) => sum + (classe.effectif || 0),
+      0
+    );
   }
 }

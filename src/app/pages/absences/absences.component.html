@@ -32,7 +32,9 @@
         </div>
         <div class="ml-4">
           <p class="text-sm font-medium text-gray-600">Total Absences</p>
-          <p class="text-2xl font-bold text-gray-900">23</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ statAbsence?.totalAbsence }}
+          </p>
         </div>
       </div>
     </div>
@@ -43,7 +45,9 @@
         </div>
         <div class="ml-4">
           <p class="text-sm font-medium text-gray-600">Retards</p>
-          <p class="text-2xl font-bold text-gray-900">156</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ statAbsence?.totalRetard }}
+          </p>
         </div>
       </div>
     </div>
@@ -54,7 +58,22 @@
         </div>
         <div class="ml-4">
           <p class="text-sm font-medium text-gray-600">Justifications</p>
-          <p class="text-2xl font-bold text-gray-900">89</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ statAbsence?.totalJustifie }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-100 rounded-full">
+          <i class="fas fa-file-alt text-blue-600"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Non Justifié</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ statAbsence?.totalNonJustifie }}
+          </p>
         </div>
       </div>
     </div>
@@ -64,8 +83,10 @@
           <i class="fas fa-check text-green-600"></i>
         </div>
         <div class="ml-4">
-          <p class="text-sm font-medium text-gray-600">Validées</p>
-          <p class="text-2xl font-bold text-gray-900">45</p>
+          <p class="text-sm font-medium text-gray-600">Traitées</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ statAbsence?.totalTraite }}
+          </p>
         </div>
       </div>
     </div>
@@ -257,9 +278,9 @@
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ absence.coursNom }}</div>
+              <div class="text-sm text-gray-900">{{ absence.nomCours }}</div>
               <div class="text-sm text-gray-500">
-                {{ absence.salleNom }} - {{ absence.createdAt | date : "EEEE" }}
+                {{ absence.salle }} - {{ absence.createdAt | date : "EEEE" }}
                 {{ absence.createdAt | date : "shortTime" }}
               </div>
             </td>
@@ -287,8 +308,8 @@
               <span
                 class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800"
               >
-                @if (absence.justification != null) {
-                {{ absence.justification }}
+                @if (absence.statutJustification != null) {
+                {{ absence.statutJustification }}
                 } @else { non justifié }
               </span>
             </td>

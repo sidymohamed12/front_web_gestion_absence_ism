@@ -56,7 +56,7 @@
             <p class="text-sm font-medium text-gray-600">Total Étudiants</p>
             <p class="text-3xl font-bold text-[#3C1F0D]">
               <ng-container *ngIf="!isLoading; else skeletonNumber2">
-                345
+                {{ Totaltudiant }}
               </ng-container>
               <ng-template #skeletonNumber2>
                 <span

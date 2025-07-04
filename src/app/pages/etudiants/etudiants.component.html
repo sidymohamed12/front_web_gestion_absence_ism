@@ -99,8 +99,7 @@
             <p class="text-sm font-medium text-gray-600">Classes</p>
             <p class="text-3xl font-bold text-[#3C1F0D]">
               <ng-container *ngIf="!isLoading; else skeletonNumber3">
-                <!-- {{ [...new Set(etudiants.filter(e => e.classe).map(e => e.classe))].length }} -->
-                23
+                {{ classCount }}
               </ng-container>
               <ng-template #skeletonNumber3>
                 <span
@@ -328,7 +327,7 @@
                 </svg>
               </button>
 
-              <button
+              <!-- <button
                 class="text-purple-600 hover:text-purple-800 p-2 rounded-lg hover:bg-purple-50 transition-colors duration-200"
                 title="Voir absences"
               >
@@ -345,11 +344,12 @@
                     d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
                   ></path>
                 </svg>
-              </button>
+              </button> -->
 
-              <button
+              <a
                 class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200"
                 title="Envoyer message"
+                href="mailto:{{ etudiant.email }}"
               >
                 <svg
                   class="w-5 h-5"
@@ -364,7 +364,7 @@
                     d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   ></path>
                 </svg>
-              </button>
+              </a>
 
               <button
                 class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors duration-200"
@@ -386,6 +386,7 @@
               </button>
 
               <button
+                (click)="viewDetail(etudiant.id)"
                 class="bg-[#3C1F0D] hover:bg-[#2a1409] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300"
               >
                 Profil
