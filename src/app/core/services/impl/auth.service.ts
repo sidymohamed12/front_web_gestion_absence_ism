@@ -25,9 +25,13 @@ export class AuthService {
 
   login(data: LoginRequestDTO): Observable<boolean> {
     return this.http
-      .post<LoginResponse>('http://localhost:8080/api/auth/login', data, {
-        withCredentials: true,
-      })
+      .post<LoginResponse>(
+        'https://backend-gestion-absence-ism-personnal.onrender.com/api/auth/login',
+        data,
+        {
+          withCredentials: true,
+        }
+      )
       .pipe(
         tap((res) => {
           this.currentUser.next(res);
@@ -41,9 +45,12 @@ export class AuthService {
 
   logout(): void {
     this.http
-      .post('http://localhost:8080/api/auth/logout', {
-        withCredentials: true,
-      })
+      .post(
+        'https://backend-gestion-absence-ism-personnal.onrender.com/api/auth/logout',
+        {
+          withCredentials: true,
+        }
+      )
       .subscribe(() => {
         this.currentUser.next(null);
         CookieService.deleteCookie('currentUser');
@@ -54,9 +61,12 @@ export class AuthService {
 
   autoLogin(): Observable<boolean> {
     return this.http
-      .get<LoginResponse>('http://localhost:8080/api/auth/me', {
-        withCredentials: true,
-      })
+      .get<LoginResponse>(
+        'https://backend-gestion-absence-ism-personnal.onrender.com/api/auth/me',
+        {
+          withCredentials: true,
+        }
+      )
       .pipe(
         tap((response) => {
           this.currentUser.next(response);
