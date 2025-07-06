@@ -8,8 +8,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class VigileService implements IVigileService {
-  private readonly apiUrl =
-    'https://backend-gestion-absence-ism-personnal.onrender.com/api/web/vigile';
+  private readonly apiUrl = 'http://localhost:8080/api/web/vigile';
 
   constructor(private readonly http: HttpClient) {}
   getAllVigiles(): Observable<UtilisateurMobileDto[]> {

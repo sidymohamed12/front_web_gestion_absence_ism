@@ -8,8 +8,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class EtudiantService implements IEtudiantService {
-  private readonly apiUrl =
-    'https://backend-gestion-absence-ism-personnal.onrender.com/api/web/etudiants';
+  private readonly apiUrl = 'http://localhost:8080/api/web/etudiants';
 
   constructor(private readonly http: HttpClient) {}
   getAllEtudians(): Observable<UtilisateurMobileDto[]> {

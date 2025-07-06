@@ -13,8 +13,7 @@ import { IAbsenceService } from '../IAbsenceService';
   providedIn: 'root',
 })
 export class AbsenceService implements IAbsenceService {
-  private readonly apiUrl =
-    'https://backend-gestion-absence-ism-personnal.onrender.com/api/web/absences';
+  private readonly apiUrl = 'http://localhost:8080/api/web/absences';
   constructor(private readonly http: HttpClient) {}
 
   // récupérer tous les absences

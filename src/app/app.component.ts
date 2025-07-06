@@ -22,6 +22,7 @@ export class AppComponent {
         console.log('Utilisateur non connecté ou session expirée');
       } else {
         console.log('Utilisateur restauré via cookie');
+        this.router.navigate(['/absences']);
       }
     });
   }
